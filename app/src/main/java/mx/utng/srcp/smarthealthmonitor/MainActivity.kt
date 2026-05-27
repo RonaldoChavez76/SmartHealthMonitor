@@ -14,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import mx.utng.srcp.smarthealthmonitor.navigation.SmartHealthNavGraph
 import mx.utng.srcp.smarthealthmonitor.ui.theme.SmartHealthMonitorTheme
 
 class MainActivity : ComponentActivity() {
@@ -21,18 +22,9 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            SmartHealthMonitorTheme {
-                Surface(modifier = Modifier.fillMaxSize()) {
-                    LoginScreen(
-                        onLoginSuccess = {
-                            // TODO sesión 5: navegar al Dashboard
-                            Log.d("SmartHealth", "Login exitoso")
-                        }
-                    )
-                }
-            }
+            // NavGraph es ahora el punto de entrada - no LoginScreen directamente
+            SmartHealthNavGraph()
         }
-
     }
 }
 
