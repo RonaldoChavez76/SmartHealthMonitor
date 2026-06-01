@@ -115,7 +115,8 @@ fun DashboardScreen(
 
                 // Botón de simulación - SOLO PARA DEBUG
                 item {
-                    if (mx.utng.srcp.smarthealthmonitor.BuildConfig.DEBUG) {
+                    // Nota: Se usa true temporalmente por error en BuildConfig
+                    if (true) {
                         OutlinedButton(
                             onClick = {
                                 // Simular lectura del wearable
