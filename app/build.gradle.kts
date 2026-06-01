@@ -46,6 +46,10 @@ dependencies {
     implementation(libs.androidx.compose.material.icons.core)
     implementation(libs.androidx.compose.material.icons.extended)
     implementation(libs.androidx.navigation.compose)
+    // Wearable Data Layer API
+    implementation(libs.play.services.wearable)
+    // Coroutines para await()
+    implementation(libs.kotlinx.coroutines.play.services)
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.tooling.preview)
