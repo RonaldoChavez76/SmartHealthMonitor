@@ -15,18 +15,20 @@ class WearListenerService : WearableListenerService() {
     override fun onMessageReceived(messageEvent: MessageEvent) {
         val data = String(messageEvent.data)
         val path = messageEvent.path
-        Log.d(TAG, "Mensaje recibido: path=$path, data=$data")
+        Log.d("WearListener", "¡MENSAJE RECIBIDO! path=$path, data=$data")
 
         when (path) {
             PATH_FC -> {
                 val bpm = data.toIntOrNull() ?: return
+                Log.d("WearListener", "Actualizando FC en el Repo: $bpm")
                 SmartHealthRepository.actualizarFC(bpm)
             }
             PATH_PASOS -> {
                 val pasos = data.toIntOrNull() ?: return
+                Log.d("WearListener", "Actualizando Pasos en el Repo: $pasos")
                 SmartHealthRepository.actualizarPasos(pasos)
             }
-            else -> Log.w(TAG, "Path desconocido: $path")
+            else -> Log.w("WearListener", "Path desconocido: $path")
         }
     }
 }
