@@ -27,5 +27,11 @@ class DashboardViewModel : ViewModel() {
             initialValue = MockData.pasosActual
         )
 
-    val historial = MockData.historialFC // TODO S7: Room
+    // NUEVO: historial desde Room (Flow reactivo)
+    val historial: StateFlow<List<LecturaFC>> = SmartHealthRepository.obtenerHistorial()
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = emptyList()
+        )
 }
