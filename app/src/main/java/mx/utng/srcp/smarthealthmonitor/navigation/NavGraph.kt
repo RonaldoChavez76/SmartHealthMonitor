@@ -13,9 +13,14 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import mx.utng.srcp.smarthealthmonitor.LoginScreen
+import mx.utng.srcp.smarthealthmonitor.ui.screens.AlertaScreen
 import mx.utng.srcp.smarthealthmonitor.ui.screens.DashboardScreen
 import mx.utng.srcp.smarthealthmonitor.ui.screens.HistorialScreen
 import mx.utng.srcp.smarthealthmonitor.ui.theme.SmartHealthMonitorTheme
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.lifecycle.viewmodel.compose.viewModel
+import mx.utng.srcp.smarthealthmonitor.ui.viewmodel.DashboardViewModel
 
 @Composable
 fun SmartHealthNavGraph() {
@@ -59,9 +64,17 @@ fun SmartHealthNavGraph() {
 
         // -- Alerta --------------------------------------
         composable(Screen.Alerta.route) {
-            PantallaEnConstruccion(
-                titulo = "Enviar alerta",
-                onBack = { navController.popBackStack() }
+            val viewModel: DashboardViewModel = viewModel()
+            val fc by viewModel.fc.collectAsState()
+            
+            AlertaScreen(
+                fc = fc,
+                onDismiss = { navController.popBackStack() },
+                onConfirm = {
+                    // Aquí iría la lógica para notificar a contactos
+                    // Por ahora solo cerramos después de confirmar
+                    navController.popBackStack()
+                }
             )
         }
     }
