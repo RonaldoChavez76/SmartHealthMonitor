@@ -15,7 +15,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import mx.utng.srcp.smarthealthmonitor.data.SmartHealthRepository
-import mx.utng.srcp.smarthealthmonitor.data.models.LecturaFC
+import mx.utng.srcp.smarthealthmonitor.data.db.LecturaFC
 import mx.utng.srcp.smarthealthmonitor.data.models.MockData
 import mx.utng.srcp.smarthealthmonitor.ui.components.FilaHistorial
 import mx.utng.srcp.smarthealthmonitor.ui.components.TarjetaDato

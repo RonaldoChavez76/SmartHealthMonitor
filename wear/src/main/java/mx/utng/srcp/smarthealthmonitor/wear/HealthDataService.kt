@@ -23,7 +23,8 @@ class HealthDataService : PassiveListenerService() {
         fcDataPoints.forEach { dataPoint ->
             if (dataPoint is SampleDataPoint<Double>) {
                 val bpm = dataPoint.value.toInt()
-                scope.launch { wearDataSender.enviarFC(bpm) }
+                WearRepository.updateFC(bpm) // Actualizar UI local
+                scope.launch { wearDataSender.enviarFC(bpm) } // Enviar al teléfono
             }
         }
     }

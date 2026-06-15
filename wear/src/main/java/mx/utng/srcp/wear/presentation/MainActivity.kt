@@ -41,6 +41,17 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
 import mx.utng.srcp.smarthealthmonitor.wear.WearDataSender
+import mx.utng.srcp.smarthealthmonitor.wear.WearRepository
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.wear.compose.material3.TitleCard
+import androidx.compose.foundation.layout.Row
+import androidx.compose.ui.Alignment
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.width
+import androidx.compose.ui.unit.dp
 
 class MainActivity : ComponentActivity() {
 
@@ -63,7 +74,11 @@ class MainActivity : ComponentActivity() {
             Manifest.permission.ACTIVITY_RECOGNITION
         )
         
-        // Agregar permiso de salud si estamos en Android 14+ (API 34+)
+        // Agregar permisos adicionales para APIs modernas
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            permissions.add(Manifest.permission.BODY_SENSORS_BACKGROUND)
+        }
+
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
             permissions.add("android.permission.health.READ_HEART_RATE")
         }
@@ -100,6 +115,10 @@ fun WearApp(greetingName: String) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val wearDataSender = remember { WearDataSender(context) }
+    
+    // Observar los datos locales
+    val currentFC by WearRepository.fcFlow.collectAsState()
+    val currentPasos by WearRepository.pasosFlow.collectAsState()
 
     SmartHealthMonitorTheme {
         AppScaffold {
@@ -110,7 +129,9 @@ fun WearApp(greetingName: String) {
                 edgeButton = {
                     EdgeButton(
                         onClick = { 
-                            scope.launch { wearDataSender.enviarFC((60..100).random()) }
+                            val fc = (60..100).random()
+                            WearRepository.updateFC(fc)
+                            scope.launch { wearDataSender.enviarFC(fc) }
                         },
                         colors =
                             ButtonDefaults.buttonColors(
@@ -121,24 +142,45 @@ fun WearApp(greetingName: String) {
                         Text("Simular FC")
                     }
                 },
-            ) { contentPadding -> // ScreenScaffold provides default padding; adjust as needed
+            ) { contentPadding -> 
                 TransformingLazyColumn(contentPadding = contentPadding, state = listState) {
                     item {
                         ListHeader(
-                            modifier =
-                                Modifier.fillMaxWidth().transformedHeight(this, transformationSpec),
+                            modifier = Modifier.fillMaxWidth().transformedHeight(this, transformationSpec),
                             transformation = SurfaceTransformation(transformationSpec),
                         ) {
-                            Text(text = stringResource(R.string.hello_world, greetingName))
+                            Text(text = "Monitor de Salud")
                         }
                     }
+
+                    // Nueva Tarjeta para mostrar el BPM actual en el reloj
+                    item {
+                        TitleCard(
+                            onClick = { },
+                            title = { Text("Frecuencia Cardíaca") },
+                            modifier = Modifier.fillMaxWidth().transformedHeight(this, transformationSpec),
+                        ) {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Text(
+                                    text = if (currentFC > 0) "$currentFC" else "--",
+                                    style = MaterialTheme.typography.displayMedium,
+                                    fontWeight = FontWeight.Bold,
+                                    color = if (currentFC > 100) Color.Red else MaterialTheme.colorScheme.primary
+                                )
+                                Spacer(Modifier.width(4.dp))
+                                Text(text = "bpm", style = MaterialTheme.typography.labelSmall)
+                            }
+                        }
+                    }
+
                     item {
                         Button(
                             onClick = { 
-                                scope.launch { wearDataSender.enviarFC((60..140).random()) }
+                                val fc = (60..140).random()
+                                WearRepository.updateFC(fc)
+                                scope.launch { wearDataSender.enviarFC(fc) }
                             },
-                            modifier = Modifier.fillMaxWidth()
-                                .transformedHeight(this, transformationSpec),
+                            modifier = Modifier.fillMaxWidth().transformedHeight(this, transformationSpec),
                             transformation = SurfaceTransformation(transformationSpec),
                         ) {
                             Text("Simular Ritmo")
@@ -147,28 +189,28 @@ fun WearApp(greetingName: String) {
                     item {
                         Button(
                             onClick = { 
-                                scope.launch { wearDataSender.enviarPasos((100..5000).random()) }
+                                val p = (100..5000).random()
+                                WearRepository.updatePasos(p)
+                                scope.launch { wearDataSender.enviarPasos(p) }
                             },
-                            modifier = Modifier.fillMaxWidth()
-                                .transformedHeight(this, transformationSpec),
+                            modifier = Modifier.fillMaxWidth().transformedHeight(this, transformationSpec),
                             transformation = SurfaceTransformation(transformationSpec),
                         ) {
-                            Text("Simular Pasos")
+                            Text("Simular Pasos ($currentPasos)")
                         }
                     }
                     item {
                         Button(
                             onClick = { 
+                                WearRepository.updateFC(0)
                                 scope.launch { wearDataSender.enviarFC(0) }
                             },
-                            modifier = Modifier.fillMaxWidth()
-                                .transformedHeight(this, transformationSpec),
+                            modifier = Modifier.fillMaxWidth().transformedHeight(this, transformationSpec),
                             transformation = SurfaceTransformation(transformationSpec),
                         ) {
-                            Text("Limpiar (0 bpm)")
+                            Text("Limpiar Datos")
                         }
                     }
-
                 }
             }
         }
