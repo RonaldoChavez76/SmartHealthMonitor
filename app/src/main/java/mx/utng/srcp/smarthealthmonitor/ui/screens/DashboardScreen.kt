@@ -6,10 +6,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -37,8 +34,30 @@ fun DashboardScreen(
     val pasos by viewModel.pasos.collectAsState()
     val historial by viewModel.historial.collectAsState()
 
+    // -- Estado del diálogo y Snackbar -----------------------
+    var mostrarAlerta by remember { mutableStateOf(false) }
+    val snackbarHost = remember { SnackbarHostState() }
+
+    // -- Diálogo condicional ---------------------------------
+    if (mostrarAlerta) {
+        AlertaScreen(
+            fc = fc,
+            onDismiss = { mostrarAlerta = false },
+            onConfirm = {
+                mostrarAlerta = false
+                scope.launch {
+                    snackbarHost.showSnackbar(
+                        message = "☑️ Alerta enviada a tus contactos de emergencia",
+                        duration = SnackbarDuration.Long
+                    )
+                }
+            }
+        )
+    }
+
     SmartHealthMonitorTheme {
         Scaffold(
+            snackbarHost = { SnackbarHost(hostState = snackbarHost) },
             topBar = {
                 TopAppBar(
                     title = {
@@ -55,7 +74,7 @@ fun DashboardScreen(
             },
             floatingActionButton = {
                 FloatingActionButton(
-                    onClick = onAlertClick,
+                    onClick = { mostrarAlerta = true },
                     containerColor = MaterialTheme.colorScheme.error
                 ) {
                     Icon(
