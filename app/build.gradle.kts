@@ -6,11 +6,7 @@ plugins {
 
 android {
     namespace = "mx.utng.srcp.smarthealthmonitor"
-    compileSdk {
-        version = release(36) {
-            minorApiLevel = 1
-        }
-    }
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "mx.utng.srcp.smarthealthmonitor"
