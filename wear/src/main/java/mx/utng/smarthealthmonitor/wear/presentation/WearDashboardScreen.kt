@@ -9,17 +9,21 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.wear.compose.foundation.lazy.ScalingLazyColumn
 import androidx.wear.compose.foundation.lazy.rememberScalingLazyListState
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.wear.compose.material.*
-import mx.utng.smarthealthmonitor.wear.WearRepository
+import kotlinx.coroutines.launch
+import mx.utng.smarthealthmonitor.wear.SmartHealthRepository
 import mx.utng.smarthealthmonitor.wear.presentation.components.WearFCCard
 
 @Composable
 fun WearDashboardScreen(
     onAlertClick: () -> Unit = { },
+    onHistorialClick: () -> Unit = { },
     viewModel: WearDashboardViewModel = viewModel()
 ) {
     val fc by viewModel.fc.collectAsState()
     val listState = rememberScalingLazyListState()
+    val scope = rememberCoroutineScope()
 
     Scaffold(
         timeText = {
@@ -42,20 +46,31 @@ fun WearDashboardScreen(
                 )
             }
 
-            // Item 2: Chip de Simulación (Para pruebas con SDK actual)
+            // Item 2: Chip de Historial (NUEVO)
+            item {
+                Chip(
+                    label = { Text("📋 Historial") },
+                    onClick = onHistorialClick,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+
+            // Item 3: Chip de Simulación
             item {
                 Chip(
                     label = { Text("🎲 Simular Sensor") },
                     onClick = {
                         val randomFC = (50..140).random()
-                        WearRepository.updateFC(randomFC)
+                        scope.launch {
+                            SmartHealthRepository.updateFC(randomFC)
+                        }
                     },
                     colors = ChipDefaults.secondaryChipColors(),
                     modifier = Modifier.fillMaxWidth()
                 )
             }
 
-            // Item 3: Chip de Alerta
+            // Item 4: Chip de Alerta
             item {
                 Chip(
                     label = { Text("⚠️ Alerta") },
