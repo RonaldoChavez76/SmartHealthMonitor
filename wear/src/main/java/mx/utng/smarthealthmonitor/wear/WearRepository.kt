@@ -1,4 +1,4 @@
-package mx.utng.srcp.smarthealthmonitor.wear
+package mx.utng.smarthealthmonitor.wear
 
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

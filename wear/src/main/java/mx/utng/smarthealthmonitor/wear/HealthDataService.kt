@@ -1,4 +1,4 @@
-package mx.utng.srcp.smarthealthmonitor.wear
+package mx.utng.smarthealthmonitor.wear
 
 import android.content.Context
 import androidx.health.services.client.HealthServices
