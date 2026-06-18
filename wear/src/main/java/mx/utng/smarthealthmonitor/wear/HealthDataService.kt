@@ -20,26 +20,18 @@ class HealthDataService : PassiveListenerService() {
     }
 
     override fun onNewDataPointsReceived(dataPoints: DataPointContainer) {
-        val fcDataPoints = dataPoints.getData(DataType.HEART_RATE_BPM)
-        Log.d("HealthDataService", "--- EVENTO DE SENSOR RECIBIDO ---")
-        Log.d("HealthDataService", "Puntos detectados: ${fcDataPoints.size}")
-
-        fcDataPoints.forEach { dataPoint ->
-            Log.d("HealthDataService", "Punto crudo: $dataPoint")
-            val bpmValue = when (dataPoint) {
-                is SampleDataPoint<*> -> (dataPoint.value as? Number)?.toDouble()
-                else -> null
-            }
-            
-            if (bpmValue != null) {
-                val bpm = bpmValue.toInt()
-                Log.d("HealthDataService", "¡BPM PROCESADO Y ENVIADO!: $bpm")
+        Log.d("HealthDataService", "--- EVENTO RECIBIDO ---")
+        
+        // Intentar obtener ritmo cardíaco
+        val fcPoints = dataPoints.getData(DataType.HEART_RATE_BPM)
+        fcPoints.forEach { point ->
+            val bpm = (point.value as? Number)?.toInt() ?: 0
+            if (bpm > 0) {
+                Log.d("HealthDataService", "SENSOR DICE: $bpm bpm")
                 scope.launch {
                     SmartHealthRepository.updateFC(bpm)
                     wearDataSender.enviarFC(bpm)
                 }
-            } else {
-                Log.w("HealthDataService", "No se pudo extraer el valor del punto")
             }
         }
     }

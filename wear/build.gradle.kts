@@ -63,6 +63,11 @@ dependencies {
     implementation(libs.compose.material3)
     implementation(libs.compose.ui.tooling)
     implementation(libs.play.services.wearable)
+    // Jetpack WatchFace API
+    implementation(libs.androidx.wear.watchface)
+    implementation(libs.androidx.wear.watchface.complications.rendering)
+    implementation(libs.androidx.wear.watchface.style)
+
     // Health Services API
     implementation(libs.androidx.health.services)
     // Coroutines await() para Guava ListenableFuture y Play Services Tasks
