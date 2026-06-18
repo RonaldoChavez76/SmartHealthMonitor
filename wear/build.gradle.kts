@@ -54,10 +54,20 @@ dependencies {
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.androidx.lifecycle.runtime.ktx)
+    // Room
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+    ksp(libs.androidx.room.compiler)
+
     implementation(libs.androidx.wear.tooling.preview)
     implementation(libs.compose.material3)
     implementation(libs.compose.ui.tooling)
     implementation(libs.play.services.wearable)
+    // Jetpack WatchFace API
+    implementation(libs.androidx.wear.watchface)
+    implementation(libs.androidx.wear.watchface.complications.rendering)
+    implementation(libs.androidx.wear.watchface.style)
+
     // Health Services API
     implementation(libs.androidx.health.services)
     // Coroutines await() para Guava ListenableFuture y Play Services Tasks

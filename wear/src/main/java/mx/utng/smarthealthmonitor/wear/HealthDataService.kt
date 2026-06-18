@@ -1,6 +1,7 @@
 package mx.utng.smarthealthmonitor.wear
 
 import android.content.Context
+import android.util.Log
 import androidx.health.services.client.HealthServices
 import androidx.health.services.client.PassiveListenerService
 import androidx.health.services.client.data.*
@@ -14,17 +15,23 @@ class HealthDataService : PassiveListenerService() {
 
     override fun onCreate() {
         super.onCreate()
+        Log.d("HealthDataService", "Servicio iniciado correctamente")
         wearDataSender = WearDataSender(this) // S6: MessageClient
     }
 
     override fun onNewDataPointsReceived(dataPoints: DataPointContainer) {
-        val fcDataPoints = dataPoints.getData(DataType.HEART_RATE_BPM)
-
-        fcDataPoints.forEach { dataPoint ->
-            if (dataPoint is SampleDataPoint<Double>) {
-                val bpm = dataPoint.value.toInt()
-                WearRepository.updateFC(bpm) // Actualizar UI local
-                scope.launch { wearDataSender.enviarFC(bpm) } // Enviar al teléfono
+        Log.d("HealthDataService", "--- EVENTO RECIBIDO ---")
+        
+        // Intentar obtener ritmo cardíaco
+        val fcPoints = dataPoints.getData(DataType.HEART_RATE_BPM)
+        fcPoints.forEach { point ->
+            val bpm = (point.value as? Number)?.toInt() ?: 0
+            if (bpm > 0) {
+                Log.d("HealthDataService", "SENSOR DICE: $bpm bpm")
+                scope.launch {
+                    SmartHealthRepository.updateFC(bpm)
+                    wearDataSender.enviarFC(bpm)
+                }
             }
         }
     }

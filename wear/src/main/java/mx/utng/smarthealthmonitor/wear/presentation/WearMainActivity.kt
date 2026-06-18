@@ -63,10 +63,11 @@ class WearMainActivity : ComponentActivity() {
     private fun registrarHealthServices() {
         lifecycleScope.launch {
             try {
+                Log.d("WearMainActivity", "Iniciando registro de Health Services...")
                 HealthDataService.registrar(applicationContext)
-                Log.d("WearMainActivity", "Health Services registrado correctamente")
+                Log.d("WearMainActivity", "¡REGISTRO EXITOSO!")
             } catch (e: Exception) {
-                Log.e("WearMainActivity", "Error al registrar Health Services", e)
+                Log.e("WearMainActivity", "ERROR CRÍTICO AL REGISTRAR: ${e.message}", e)
             }
         }
     }
