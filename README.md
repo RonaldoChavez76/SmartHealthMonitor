@@ -23,11 +23,21 @@ Desarrollada como proyecto integrador — UTNG 9° Cuatrimestre 2025.
 | HistorialScreen | Lecturas persistidas en Room con Flow reactivo |
 | AlertaScreen | AlertDialog MD3 + Snackbar de confirmación |
 
+## Unidad II - Wear OS
+| Pantalla | Descripción |
+|---|---|
+| WearDashboardScreen | FC en tiempo real con ScalingLazyColumn y TimeText |
+| WearHistorialScreen | Lista con Rotary Input (corona del reloj) |
+| WearAlertaScreen | Botones circulares de confirmación |
+| SmartHealth WatchFace | Hora + FC en el WatchFace nativo |
+
 ## Capturas de pantalla
 ![Login](screenshots/login.png)
 ![Dashboard](screenshots/dashboard.png)
 ![Historial](screenshots/historial.png)
 ![Alerta](screenshots/alerta.png)
+![WatchFace](screenshots/watchface.png)
+![WearDashboard](screenshots/wear_dashboard.png)
 
 ## Autor
 Ronaldo Chavez — UTNG — Ing. en Desarrollo y Gestión de Software
